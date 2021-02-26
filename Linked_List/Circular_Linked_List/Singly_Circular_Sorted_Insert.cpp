@@ -1,12 +1,18 @@
 
 /*****************************************************************************************************************************************
 
-Singly_Middle_Element.cpp
+Singly_Circular_Sorted_Insert.cpp
 Created on: 26-Feb-2021
 Author: Malkeet Mehra
 
-Divide Circular Linked List in two equal parts.
-If odd, 1st should have 1 extra element.
+Insert a new value in a sorted Circular Linked List (CLL).
+Example :
+Input :
+1->2->4->5->Back_to_1
+Insert 3,
+
+Output :
+1->2->3->4->5->Back_to_1
 
 ******************************************************************************************************************************************/
 #include<bits/stdc++.h>
@@ -53,23 +59,43 @@ void insert_end(Node *&head, int x)
     }
 }
 
-void divide_parts(Node *&head, Node *&head1, Node *&head2)
+void insert_sorted(Node *&head, int x)
 {
-    Node *slow = head->next, *fast = head->next, *temp = NULL;
-    while(fast != head && fast->next != head)
-    {
-        slow = slow->next;
-        fast = fast->next->next;
-    }
-    if(fast->next == head)
-        fast = fast->next;
-    temp = fast->next;
-    fast->next = slow->next;
-    head2 = fast;
+    // Creating New Node
+    Node *temp;
+    temp = new Node();
+    temp->data = x;
 
-    slow->next = temp;
-    head1 = slow;
-    head = NULL;
+    // If List is Empty
+    if(head == NULL)
+    {
+        temp->next = temp;
+        head = temp;
+        return;
+    }
+
+    // If added on first node
+    if(head->next->data > x)
+    {
+        temp->next = head->next;
+        head->next = temp;
+        return;
+    }
+
+    // If added on last node
+    if(head->data < x)
+    {
+        temp->next = head->next;
+        head->next = temp;
+        head = temp;
+        return;
+    }
+    // After any inner node
+    Node *pre = head->next;
+    while(pre->next->data < x)
+        pre = pre->next;
+    temp->next = pre->next;
+    pre->next = temp;
 }
 
 int main()
@@ -77,17 +103,12 @@ int main()
     Node *head = NULL, *head1 = NULL, *head2 = NULL;
     insert_end(head, 1);
     insert_end(head, 2);
-    insert_end(head, 3);
+    //insert_end(head, 3);
     insert_end(head, 4);
     insert_end(head, 5);
     cout << "Head : ";print(head);
-    cout << "Head 1 : ";print(head1);
-    cout << "Head 2 : ";print(head2);
-    divide_parts(head, head1, head2);
+    insert_sorted(head,3);
     cout << "Head : ";print(head);
-    cout << "Head 1 : ";print(head1);
-    cout << "Head 2 : ";print(head2);
-
     return 0;
 }
 
